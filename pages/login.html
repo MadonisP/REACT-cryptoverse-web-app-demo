@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../assets/css/loginStyle.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <header id="header" class="fixed-top d-flex align-items-center header-transparent">
+        <div>
+
+            <div class="logo">
+                <h1 class="text-light"><a href="../index.html"><span>Elma Kurdu</span></a></h1>
+            </div>
+        </div>
+    </header><!-- End Header -->
+    <div class="container">
+        <div class="forms">
+            <div class="form-content">
+                <div class="login-form">
+                    <div class="title">Giriş yap</div>
+                    <div action="#">
+                        <div class="input-boxes">
+                            <div class="input-box">
+                                <i class="fas fa-envelope"></i>
+                                <input type="text" placeholder="Enter your email" id="email" required>
+                            </div>
+                            <div class="input-box">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" placeholder="Enter your password" id="pass" required>
+                            </div>
+                            <div class="text"><a href="ForgotPass.html">Forgot password?</a></div>
+                            <input type="checkbox" id="customSwitch1">
+                            <label for="customSwitch1">Beni Hatırla</label>
+                            <div class="button input-box">
+                                <input type="button" value="Sumbit" id="Login">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, doc, getDoc, where, query, getDocs } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-firestore.js";
+        // import CryptoJS from "crypto-js"
+
+
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD3J3ih_UY_4-XhvYk4-hdDaa2uOW-YWJY",
+            authDomain: "atasozu-3ce56.firebaseapp.com",
+            projectId: "atasozu-3ce56",
+            storageBucket: "atasozu-3ce56.appspot.com",
+            messagingSenderId: "332651341963",
+            appId: "1:332651341963:web:62e0ca48bee7dcf34bcc8e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const db = getFirestore(app);
+
+        const email = document.getElementById('email');
+        const password = document.getElementById('pass');
+
+        Login.addEventListener('click', (e) => {
+
+            signInWithEmailAndPassword(auth, email.value, password.value)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    onAuthStateChanged(auth, (user) => {
+                        if (user) {
+                            const uid = user.uid;
+                            useruid(uid);// admin uid:yd9M7airrMTHGmgKeBy4R3Dek3w1
+                            console.log('uid')
+                        } else {
+                            alert('sorun yeri kullanıcı manage ');
+                        }
+                    });
+
+                    getDoc(doc(db, "users", "88T645PMWapomNAC4IUZ" )).then(docSnap => {
+                        if (docSnap.exists()) {
+                            console.log("Document data:", docSnap.data());
+                            console.log(docSnap.data().name)
+                            login(docSnap.data());
+                        } else {
+                            console.log("No such document!");
+                        }
+                    })
+
+
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    alert(errorMessage)
+                });
+        });
+
+
+        //----------------------login-------------------------------//
+
+        function useruid(uid) {
+            let keepLoggedIn = document.getElementById('customSwitch1').checked;
+
+            if (!keepLoggedIn) {
+                sessionStorage.setItem('uid', JSON.stringify(uid));
+            }
+            else {
+                localStorage.setItem('keepLoggedIn', 'yes');
+                localStorage.setItem('uid', JSON.stringify(uid));
+            }
+        }
+
+        function login(user) {
+            let keepLoggedIn = document.getElementById('customSwitch1').checked;
+
+            if (!keepLoggedIn) {
+                sessionStorage.setItem('user', JSON.stringify(user));
+                window.location = "../index.html";
+            }
+            else {
+                localStorage.setItem('keepLoggedIn', 'yes');
+                localStorage.setItem('user', JSON.stringify(user));
+                window.location = "../index.html";
+            }
+        }
+
+    </script>
+</body>
+
+</html>

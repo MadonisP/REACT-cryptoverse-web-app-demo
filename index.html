@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+  <header id="header" class="fixed-top d-flex align-items-center header-transparent">
+    <div class="upContainer">
+      <div class="logo">
+        <h1 class="text-light"><span>Elma Kurdu</span></h1>
+      </div>
+    </div>
+    <nav id="navbar" class="navbar">
+      <ul class="nav__links">
+        <li><a id="kulLink" class="active " href="">ad</a></li>
+      </ul>
+    </nav>
+    <button><a class="cta" id="cikisLink" href="">Giriş</a></button>
+    <button><a class="cta" id="kayitEkle" href="">kayit et</a></button>
+  </header>
+  <div class="container">
+    <input type="checkbox" id="flip">
+    <div class="cover">
+      <div class="front">
+        <!--<img src="images/frontImg.jpg" alt="">-->
+        <div class="text">
+          <span class="text-1">Her atasozu sizi hazineye <br> bir adım daha yaklaştırır</span>
+          <span class="text-2">Haydi öğrenelim</span>
+        </div>
+      </div>
+      <div class="back">
+        <!--<img class="backImg" src="images/backImg.jpg" alt="">-->
+        <div class="text">
+          <span class="text-1">Her atasozu sizi hazineye <br> bir adım daha yaklaştırır</span>
+          <span class="text-2">Haydi öğrenelim</span>
+        </div>
+      </div>
+    </div>
+    <div class="forms">
+      <div class="form-content">
+        <div class="signup-form">
+          <div class="title">Atasozu ara</div>
+          <div class="formF" action="#">
+            <div class="input-boxes">
+              <div class="input-box">
+                <i class="fas fa-envelope"></i>
+                <input type="text" placeholder="atasozunun aklınızdaki kelimelerini yazın" id="sozAra"
+                  onkeyup="arama()">
+              </div>
+              <table class="scrolldown" id="sozlerListesi">
+                <thead>
+                  <th>
+                    no:
+                  </th>
+                  <th>
+                    Atasozlerimiz:
+                  </th>
+                </thead>
+                <tbody id="tbody1"></tbody>
+              </table>
+              <div class="text sign-up-text">Atasozu <label for="flip">Ekle</label></div>
+            </div>
+          </div>
+        </div>
+        <div class="add-form">
+          <div class="title">Atasozu ekle</div>
+          <div class="formF" action="#">
+            <div class="input-boxes">
+              <div class="input-box">
+                <i class="fas fa-envelope"></i>
+                <input type="text" placeholder="Atasozu ekle" id="Ekle">
+              </div>
+              <div class="button input-box">
+                <input type="button" value="Ekle" id="Ekleiid">
+              </div>
+              <div class="text sign-up-text">Atasozu Eklemek Için Giriş Yapmış Olmalısınız <label for="flip"><br>
+                  Atasozu Ara</label></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    //------------------------------------------referanslar------------------------------------------//
+    let kulLink = document.getElementById('kulLink');
+    let cikisLink = document.getElementById('cikisLink');
+    let kayitEkle = document.getElementById('kayitEkle');
+    var currentUser = null;
+    var currentUserUid=null;
+
+    //------------------------------------------fonksiyonlar------------------------------------------//
+
+    function getUsername() {
+      let keepLoggedIn = localStorage.getItem("keepLoggedIn");
+
+      if (keepLoggedIn == "yes") {
+        currentUser = JSON.parse(localStorage.getItem('user'));
+      }
+      else {
+        currentUser = JSON.parse(sessionStorage.getItem('user'));
+      }
+    }
+
+    function getUseruid() {
+      let keepLoggedIn = localStorage.getItem("keepLoggedIn");
+
+      if (keepLoggedIn == "yes") {
+        currentUserUid = JSON.parse(localStorage.getItem('uid'));
+      }
+      else {
+        currentUserUid = JSON.parse(sessionStorage.getItem('uid'));
+      }
+    }
+
+    function Signout() {
+      sessionStorage.removeItem('user');
+      localStorage.removeItem('user');
+      localStorage.removeItem('keepLoggedIn');
+      sessionStorage.removeItem('uid');
+      localStorage.removeItem('uid');
+      window.location = "./index.html";
+    }
+
+    //------------------------------------------window load------------------------------------------//
+
+    window.onload = function () {
+      getUsername();
+      getUseruid();
+      console.log(currentUserUid);
+      console.log(currentUser);
+      if (currentUserUid == "yd9M7airrMTHGmgKeBy4R3Dek3w1") {
+        kulLink.innerText = currentUser.name;
+        kulLink.classList.remove("visible");
+        kulLink.href = "#";
+
+        document.getElementById('Ekle').disabled = false;
+
+        kayitEkle.innerText = "Kayit et";
+        kayitEkle.classList.remove("visible");//
+        kayitEkle.classList.remove("visible");//
+        kayitEkle.classList.remove("visible");//
+        kayitEkle.href = "pages/register.html";
+
+        cikisLink.innerText = "Cıkış Yap";
+        cikisLink.href = "javascript:Signout()";
+
+      }
+      else if (currentUserUid != null && currentUserUid != "yd9M7airrMTHGmgKeBy4R3Dek3w1") {
+
+        kulLink.innerText = currentUser.name;
+        kulLink.classList.remove("visible");
+        kulLink.href = "#";
+
+        kayitEkle.classList.add("visible");//
+
+        document.getElementById('Ekle').disabled = false;
+
+        cikisLink.innerText = "Cıkış Yap";
+        cikisLink.href = "javascript:Signout();";
+
+
+      }
+      else {
+
+        kulLink.innerText = "";
+        kulLink.classList.add("visible")
+        kulLink.href = "#";
+
+        cikisLink.innerText = "Giriş yap";
+        cikisLink.href = "pages/login.html";
+
+        document.getElementById('Ekle').disabled = true;
+
+        kayitEkle.classList.add("visible");
+      }
+    }
+  </script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, doc, getDoc, setDoc, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD3J3ih_UY_4-XhvYk4-hdDaa2uOW-YWJY",
+      authDomain: "atasozu-3ce56.firebaseapp.com",
+      projectId: "atasozu-3ce56",
+      storageBucket: "atasozu-3ce56.appspot.com",
+      messagingSenderId: "332651341963",
+      appId: "1:332651341963:web:62e0ca48bee7dcf34bcc8e"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const db = getFirestore(app);
+
+
+
+    Ekleiid.addEventListener('click', (e) => {
+
+
+      var ekle = document.getElementById('Ekle');
+
+      try {
+        const docRef = addDoc(collection(db, "atasozleri"), {
+          atasozu: ekle.value
+        });
+        console.log("Document written with ID: ", docRef.id);
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+      /*setDoc(doc(db, "atasozleri", "sozleri"), {
+        Atasozu: ekle.value,
+      });*/
+
+    });
+
+
+    //---------------------------------------------tüm datayı çekme---------------------//
+    function getAllDataOnce() {
+      const querySnapshot = getDocs(collection(db, "atasozleri")).then(querySnapshot => {
+        var atasozleri = [];
+        querySnapshot.forEach((doc) => {
+          atasozleri.push(doc.data().atasozu);
+        });
+        addAllItemsToTheTable(atasozleri);
+      })
+    }
+
+    function getAllDataRealtime() {
+      const unsub = onSnapshot(doc(db, "cities", "SF"), (doc) => {
+        var atasozleri = [];
+        const source = doc.metadata.hasPendingWrites ? "Local" : "Server";
+        source.forEach((doc) => {
+          atasozleri.push(doc.data().atasozu)
+        })
+        console.log(source, " data: ", doc.data());
+        addAllItemsToTheTable(atasozleri);
+
+      });
+
+    }
+
+
+    //----------------------------------table yi doldurma-------------------------//
+    var stdNo = 0;
+    var tbody = document.getElementById('tbody1');
+
+    function AddItemToTable(atasozu) {
+      var trow = document.createElement('tr');
+      var td1 = document.createElement('td');
+      var td2 = document.createElement('td');
+
+      td1.innerHTML = ++stdNo;
+      td2.innerHTML = atasozu;
+
+      trow.appendChild(td1);
+      trow.appendChild(td2);
+
+      tbody.appendChild(trow);
+    }
+
+    function addAllItemsToTheTable(atasozleriDocsList) {
+      stdNo = 0;
+      tbody.innerHTML = "";
+
+      atasozleriDocsList.forEach(element => {
+        AddItemToTable(element);
+      })
+    }
+
+    window.addEventListener("load", getAllDataOnce(), {},);//ikinci bir window.onload eventi oldugu için bu şekilde yazdık
+
+  </script>
+
+  <script>
+    function arama() {
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("sozAra");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("sozlerListesi");
+      tr = table.getElementsByTagName("tr");
+
+      //for döngüsü ile bütün her şeyi yazdırıyoruz
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[1];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>

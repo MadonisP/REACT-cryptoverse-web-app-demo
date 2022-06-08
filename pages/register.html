@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/css/registerStyle.css">
+</head>
+
+<body>
+    <header id="header" class="fixed-top d-flex align-items-center header-transparent">
+        <div class="container d-flex justify-content-between align-items-center">
+
+            <div class="logo">
+                <h1 class="text-light"><a href="../index.html"><span>Elma Kurdu</span></a></h1>
+            </div>
+        </div>
+    </header>
+    <div class="wrapper">
+        <h2>Kullanıcı kayıt paneli</h2>
+        <div class="formD">
+            <div class="input-box">
+                <input type="text" placeholder="Kullanıcı ismi" id="name">
+            </div>
+            <div class="input-box">
+                <input type="text" placeholder="Kullanıcı eposta" id="email">
+            </div>
+            <div class="input-box">
+                <input type="password" placeholder="Şifre oluştur" id="password">
+            </div>
+            <div class="input-box">
+                <input type="password" placeholder="Şifreyi doğrula" id="passcheck">
+            </div>
+            <div class="input-box button">
+                <input type="Button" value="Kaydet" id="Kayit">
+            </div>
+        </div>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-firestore.js";
+        // import CryptoJS from "crypto-js"
+
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD3J3ih_UY_4-XhvYk4-hdDaa2uOW-YWJY",
+            authDomain: "atasozu-3ce56.firebaseapp.com",
+            projectId: "atasozu-3ce56",
+            storageBucket: "atasozu-3ce56.appspot.com",
+            messagingSenderId: "332651341963",
+            appId: "1:332651341963:web:62e0ca48bee7dcf34bcc8e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+        const passC = document.getElementById('passcheck');
+        const name = document.getElementById('name');
+    
+
+        Kayit.addEventListener('click', (e) => {
+            if(!validation()){
+                alert('hata')
+                return;
+            };
+
+            if(password.value!=passC.value){
+                alert('şifreler uyuşmuyor kontrol ediniz');
+                reutrn;
+            }
+
+            createUserWithEmailAndPassword(auth, email.value, password.value)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+
+                    try {
+                        const docRef = addDoc(collection(db, "users"), {
+                            name: name.value,
+                            password:password.value,/* encPass(), */
+                            email: email.value,
+                        });
+                        console.log("Document written with ID: ", docRef.id);
+                        window.location="../index.html"
+                    } catch (e) {
+                        console.error("Error adding document: ", e);
+                    }
+                })
+                .catch((error) => {
+                    alert(email + " xd " + password)
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    alert(errorMessage);
+                });
+        });
+
+
+        function validation(){
+            let nameregex=/^[a-zA-Z\s]+$/;
+            let emailegex=/[a-zA-Z0-9]+$/;
+            
+            if(!nameregex.test(name.value)){
+                alert(name.value);
+                alert("isminiz sadece alfabede geçen harflerden olmalıdır");
+                return false;
+            }
+
+            if(!emailegex.test(email.value)){
+                alert("geçersiz bir eposta giriniz");
+                return false;
+            }
+            return true;
+        }
+
+        /* function encPass(){
+            var pass12 = CryptoJS.AES.encrypt(password, password);
+            return pass12.toString();
+        }
+        */
+
+
+    </script>
+</body>
+
+</html>
